@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Recent Applications — Interview IQ{% endblock %}
+{% block content %}
+<div class="page-container">
+  <div class="page-header">
+    <div>
+      <h1>Recent Applications</h1>
+      <p>{{ recent_apps|length }} candidate{{ recent_apps|length|pluralize }} recently applied</p>
+    </div>
+    <a href="{% url 'company_dashboard' %}" class="btn btn-outline-dark">← Dashboard</a>
+  </div>
+
+  {% if recent_apps %}
+  <div style="display:flex;flex-direction:column;gap:1rem;">
+    {% for app in recent_apps %}
+    <div class="card">
+      <div class="card-body" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+            <div style="width:40px;height:40px;background:var(--accent-dim);border-radius:50%;display:grid;place-items:center;font-family:'Syne',sans-serif;font-weight:800;color:var(--accent);">{{ app.applicant.full_name|first|upper }}</div>
+            <div>
+              <div style="font-family:'Syne',sans-serif;font-weight:700;">{{ app.applicant.full_name }}</div>
+              <div class="text-muted text-sm">{{ app.applicant.desired_role|default:"Job Seeker" }} · {{ app.applicant.experience_years }} yrs exp</div>
+            </div>
+          </div>
+          <div class="skills-preview">
+            {% for skill in app.applicant.get_skills_list|slice:":8" %}<span class="skill-pill">{{ skill }}</span>{% endfor %}
+          </div>
+          <div style="margin-top:0.75rem;background:var(--paper);border-radius:var(--radius-sm);padding:0.75rem;font-size:0.85rem;color:var(--slate);">
+            <strong>Job:</strong> {{ app.job.title }}
+          </div>
+          {% if app.cover_letter %}
+          <div style="margin-top:0.5rem;background:var(--paper);border-radius:var(--radius-sm);padding:0.75rem;font-size:0.85rem;color:var(--slate);">
+            <strong>Cover Letter:</strong> {{ app.cover_letter|truncatewords:35 }}
+          </div>
+          {% endif %}
+        </div>
+
+        <div style="text-align:right;min-width:160px;">
+          {% if app.match_score >= 70 %}
+            <div class="match-badge match-high mb-1">⚡ {{ app.match_score }}% Match</div>
+          {% elif app.match_score >= 40 %}
+            <div class="match-badge match-med mb-1">{{ app.match_score }}% Match</div>
+          {% else %}
+            <div class="match-badge match-low mb-1">{{ app.match_score }}% Match</div>
+          {% endif %}
+
+          <div><span class="status-badge status-{{ app.status }}">{{ app.get_status_display }}</span></div>
+          <div class="text-xs text-muted mt-1">{{ app.applied_at|date:"M d, Y" }}</div>
+
+          <a href="{% url 'view_applications' app.job.pk %}?app_pk={{ app.pk }}" class="btn btn-sm btn-primary" style="margin-top:0.75rem;display:block;">
+            Review →
+          </a>
+
+          {% if app.resume %}
+            <a href="{{ app.resume.url }}" target="_blank" class="btn btn-sm btn-outline-dark" style="margin-top:0.4rem;display:block;">
+              📄 Resume
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="icon">📄</div>
+    <h3>No applications yet</h3>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+

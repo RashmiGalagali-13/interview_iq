@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users — Admin{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">⚡</div>
+      <div><div class="sidebar-title">Admin Panel</div><div class="sidebar-sub">{{ request.user.username }}</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'admin_dashboard' %}" class="sidebar-link">📊 Dashboard</a>
+      <a href="{% url 'admin_users' %}" class="sidebar-link active">👥 Manage Users</a>
+      <a href="{% url 'admin_jobs' %}" class="sidebar-link">💼 Manage Jobs</a>
+      <a href="{% url 'admin_applications' %}" class="sidebar-link">📋 Applications</a>
+      <a href="{% url 'admin_questions' %}" class="sidebar-link">🧠 Interview Questions</a>
+      <div class="sidebar-divider"></div>
+      <a href="{% url 'home' %}" class="sidebar-link">🏠 View Site</a>
+      <a href="{% url 'logout' %}" class="sidebar-link sidebar-logout">🚪 Logout</a>
+    </nav>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 class="admin-page-title">Manage Users</h1>
+      <span class="admin-badge">{{ users|length }} records</span>
+    </div>
+
+    <!-- Filters -->
+    <div class="admin-filters">
+      <form method="get" class="filter-form">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search username or email…" class="filter-input">
+        <select name="type" class="filter-select">
+          <option value="">All Types</option>
+          <option value="jobseeker" {% if user_type == 'jobseeker' %}selected{% endif %}>Job Seeker</option>
+          <option value="company" {% if user_type == 'company' %}selected{% endif %}>Company</option>
+          <option value="admin" {% if user_type == 'admin' %}selected{% endif %}>Admin</option>
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        <a href="{% url 'admin_users' %}" class="btn btn-outline btn-sm">Reset</a>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr><th>User</th><th>Type</th><th>Joined</th><th>Last Login</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+            <tr>
+              <td>
+                <div class="user-cell">
+                  <div class="avatar-sm">{{ u.username|first|upper }}</div>
+                  <div>
+                    <div class="fw-600">{{ u.username }}</div>
+                    <div class="text-sm text-muted">{{ u.email }}</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="badge badge-{{ u.user_type }}">{{ u.user_type|title }}</span></td>
+              <td class="text-sm">{{ u.date_joined|date:"M d, Y" }}</td>
+              <td class="text-sm text-muted">{{ u.last_login|date:"M d, Y"|default:"Never" }}</td>
+              <td>
+                {% if u.is_active %}
+                  <span class="status-pill status-active">Active</span>
+                {% else %}
+                  <span class="status-pill status-inactive">Inactive</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="action-btns">
+                  <form method="post" action="{% url 'admin_toggle_user' u.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-xs {% if u.is_active %}btn-warning{% else %}btn-success{% endif %}">
+                      {% if u.is_active %}Deactivate{% else %}Activate{% endif %}
+                    </button>
+                  </form>
+                  {% if u != request.user %}
+                  <form method="post" action="{% url 'admin_delete_user' u.pk %}" style="display:inline;" onsubmit="return confirm('Delete user {{ u.username }}?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                  </form>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-muted py-4">No users found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

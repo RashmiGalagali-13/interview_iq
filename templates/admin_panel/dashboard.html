@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard — Interview IQ{% endblock %}
+{% block content %}
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">⚡</div>
+      <div>
+        <div class="sidebar-title">Admin Panel</div>
+        <div class="sidebar-sub">{{ request.user.username }}</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'admin_dashboard' %}" class="sidebar-link active">📊 Dashboard</a>
+      <a href="{% url 'admin_users' %}" class="sidebar-link">👥 Manage Users</a>
+      <a href="{% url 'admin_jobs' %}" class="sidebar-link">💼 Manage Jobs</a>
+      <a href="{% url 'admin_applications' %}" class="sidebar-link">📋 Applications</a>
+<a href="{% url 'admin_questions' %}" class="sidebar-link">🧠 Interview Questions</a>
+      <a href="{% url 'admin_messages' %}" class="sidebar-link">📬 Contact Messages</a>
+      <div class="sidebar-divider"></div>
+      <a href="{% url 'home' %}" class="sidebar-link">🏠 View Site</a>
+      <a href="{% url 'logout' %}" class="sidebar-link sidebar-logout">🚪 Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 class="admin-page-title">Dashboard Overview</h1>
+      <span class="admin-badge">Administrator</span>
+    </div>
+
+<!-- Stats Grid -->
+    <div class="admin-stats-grid">
+      <div class="stat-card accent">
+        <a href="{% url 'admin_users' %}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <div class="stat-number">{{ stats.total_users }}</div>
+            <div class="stat-label">Total Users</div>
+          </div>
+          <div class="stat-sub">{{ stats.total_seekers }} seekers · {{ stats.total_companies }} companies</div>
+        </a>
+      </div>
+      <div class="stat-card green">
+        <a href="{% url 'admin_post_job' %}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+          <div class="stat-icon">💼</div>
+          <div class="stat-info">
+            <div class="stat-number">{{ stats.total_jobs }}</div>
+            <div class="stat-label">Total Jobs</div>
+          </div>
+          <div class="stat-sub">{{ stats.active_jobs }} active listings</div>
+        </a>
+      </div>
+      <div class="stat-card blue">
+        <a href="{% url 'admin_applications' %}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+          <div class="stat-icon">📋</div>
+          <div class="stat-info">
+            <div class="stat-number">{{ stats.total_applications }}</div>
+            <div class="stat-label">Applications</div>
+          </div>
+          <div class="stat-sub">{{ stats.pending_apps }} pending · {{ stats.accepted_apps }} accepted</div>
+        </a>
+      </div>
+<div class="stat-card orange">
+        <a href="{% url 'admin_messages' %}" style="text-decoration:none;color:inherit;display:block;height:100%;">
+          <div class="stat-icon">📬</div>
+          <div class="stat-info">
+            <div class="stat-number">{{ stats.unread_messages }}</div>
+            <div class="stat-label">Contact Messages</div>
+          </div>
+          <div class="stat-sub">{{ stats.total_messages }} total messages</div>
+        </a>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon">🧠</div>
+        <div class="stat-info">
+          <div class="stat-number">{{ stats.total_questions }}</div>
+          <div class="stat-label">Interview Questions</div>
+        </div>
+        <div class="stat-sub">{{ stats.total_practice }} practice sessions</div>
+      </div>
+    </div>
+
+    <div class="admin-grid-2">
+      <!-- Recent Users -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h2>Recent Users</h2>
+          <a href="{% url 'admin_users' %}" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>User</th><th>Type</th><th>Joined</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for u in recent_users %}
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="avatar-sm">{{ u.username|first|upper }}</div>
+                    <div>
+                      <div class="fw-600">{{ u.username }}</div>
+                      <div class="text-muted text-sm">{{ u.email }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="badge badge-{{ u.user_type }}">{{ u.user_type|title }}</span></td>
+                <td class="text-sm text-muted">{{ u.date_joined|date:"M d, Y" }}</td>
+                <td>
+                  {% if u.is_active %}
+                    <span class="dot dot-green"></span> Active
+                  {% else %}
+                    <span class="dot dot-red"></span> Inactive
+                  {% endif %}
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="4" class="text-center text-muted">No users yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recent Applications -->
+      <div class="admin-card">
+        <div class="admin-card-header">
+          <h2>Recent Applications</h2>
+          <a href="{% url 'admin_applications' %}" class="btn btn-sm btn-outline">View All</a>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr><th>Applicant</th><th>Job</th><th>Status</th></tr></thead>
+            <tbody>
+              {% for app in recent_apps %}
+              <tr>
+                <td class="fw-600">{{ app.applicant.full_name }}</td>
+                <td>
+                  <div class="fw-500">{{ app.job.title }}</div>
+                  <div class="text-sm text-muted">{{ app.job.company.company_name }}</div>
+                </td>
+                <td><span class="status-badge status-{{ app.status }}">{{ app.get_status_display }}</span></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="3" class="text-center text-muted">No applications yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+<!-- Top Companies -->
+    <div class="admin-card mt-4">
+      <div class="admin-card-header">
+        <h2>Top Companies by Job Postings</h2>
+        <a href="{% url 'admin_jobs' %}" class="btn btn-sm btn-outline">All Jobs</a>
+      </div>
+      <div class="company-list-grid">
+        {% for co in top_companies %}
+        <div class="company-rank-card">
+          <div class="company-rank-num">#{{ forloop.counter }}</div>
+          <div class="company-rank-info">
+            <div class="fw-600">{{ co.company_name }}</div>
+            <div class="text-sm text-muted">{{ co.industry }}</div>
+          </div>
+          <div class="company-rank-count">{{ co.job_count }} jobs</div>
+        </div>
+        {% empty %}
+        <p class="text-muted">No companies yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Recent Contact Messages -->
+    <div class="admin-card mt-4">
+      <div class="admin-card-header">
+        <h2>Recent Contact Messages</h2>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Name</th><th>Email</th><th>Message</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for msg in recent_messages %}
+            <tr>
+              <td class="fw-600">{{ msg.name }}</td>
+              <td class="text-sm">{{ msg.email }}</td>
+              <td class="text-sm" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ msg.message }}</td>
+              <td class="text-sm text-muted">{{ msg.created_at|date:"M d, Y" }}</td>
+              <td>
+                {% if msg.is_read %}
+                  <span class="badge badge-gray">Read</span>
+                {% else %}
+                  <span class="badge badge-orange">Unread</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center text-muted">No contact messages yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

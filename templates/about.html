@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}About Us - Interview IQ{% endblock %}
+
+{% block content %}
+<section class="hero" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 4rem 2rem; text-align: center;">
+  <div class="hero-content" style="max-width: 800px; margin: 0 auto;">
+    <div class="hero-eyebrow" style="font-size: 1.1rem; color: var(--accent); font-weight: 600; margin-bottom: 1rem;">✦ About Interview IQ</div>
+    <h1 style="font-size: 3rem; line-height: 1.1; margin-bottom: 1.5rem;">
+      Revolutionizing <span class="accent-text" style="background: linear-gradient(135deg, var(--accent), var(--accent-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Job Search & Interview Prep</span>
+    </h1>
+    <p style="font-size: 1.25rem; color: var(--slate); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+      Interview IQ is your all-in-one platform for smart job matching, real-time application tracking, and AI-powered interview practice.
+    </p>
+  </div>
+</section>
+
+<div class="page-container">
+  <div class="company-desc" style="margin-bottom: 3rem;">
+    <h2 style="font-size: 2.2rem; margin-bottom: 1.5rem;">Our Mission & Vision</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; @media (max-width: 768px){grid-template-columns: 1fr;}">
+      <div>
+        <h3 style="font-size: 1.6rem; margin-bottom: 1rem; color: var(--accent);">Mission</h3>
+        <p style="line-height: 1.7; color: var(--slate);">To empower job seekers and companies with intelligent tools that make hiring faster, fairer, and more effective. We believe great matches happen when skills meet opportunity.</p>
+      </div>
+      <div>
+        <h3 style="font-size: 1.6rem; margin-bottom: 1rem; color: var(--accent);">Vision</h3>
+        <p style="line-height: 1.7; color: var(--slate);">A world where every professional finds their ideal role through AI-driven insights, transparent tracking, and realistic interview preparation.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-bottom: 3rem;">
+    <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Key Features</h2>
+    <p class="text-muted" style="font-size: 1.1rem;">Everything you need to succeed in your career journey</p>
+  </div>
+
+  <div class="grid-3 mb-3" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+    <div class="card" style="text-align: center; padding: 2.5rem 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); transition: transform 0.3s;">
+      <div style="font-size: 3rem; margin-bottom: 1.5rem;">🎯</div>
+      <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Smart Job Matching</h3>
+      <p style="color: var(--slate);">AI-powered algorithm matches your skills with perfect opportunities.</p>
+    </div>
+    <div class="card" style="text-align: center; padding: 2.5rem 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); transition: transform 0.3s;">
+      <div style="font-size: 3rem; margin-bottom: 1.5rem;">📊</div>
+      <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Application Tracking</h3>
+      <p style="color: var(--slate);">Real-time status updates from pending to interview to offer.</p>
+    </div>
+    <div class="card" style="text-align: center; padding: 2.5rem 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); transition: transform 0.3s;">
+      <div style="font-size: 3rem; margin-bottom: 1.5rem;">🎤</div>
+      <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Interview Practice</h3>
+      <p style="color: var(--slate);">500+ real questions with instant feedback and progress tracking.</p>
+    </div>
+    <div class="card" style="text-align: center; padding: 2.5rem 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); transition: transform 0.3s;">
+      <div style="font-size: 3rem; margin-bottom: 1.5rem;">👥</div>
+      <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Company Dashboard</h3>
+      <p style="color: var(--slate);">Manage postings, review applications, and build your employer brand.</p>
+    </div>
+    <div class="card" style="text-align: center; padding: 2.5rem 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); transition: transform 0.3s;">
+      <div style="font-size: 3rem; margin-bottom: 1.5rem;">⚡</div>
+      <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Lightning Fast</h3>
+      <p style="color: var(--slate);">Blazing performance and intuitive design for seamless experience.</p>
+    </div>
+    <div class="card" style="text-align: center; padding: 2.5rem 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); transition: transform 0.3s;">
+      <div style="font-size: 3rem; margin-bottom: 1.5rem;">🔒</div>
+      <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Secure & Private</h3>
+      <p style="color: var(--slate);">Your data protected with enterprise-grade security.</p>
+    </div>
+  </div>
+
+  <div style="text-align: center; padding: 3rem 2rem; background: var(--ink); color: white; border-radius: var(--radius-lg);">
+    <h2 style="font-size: 1.8rem; margin-bottom: 1rem;">Join the Future of Work</h2>
+    <p style="margin-bottom: 2rem; opacity: 0.9;">Ready to take control of your career?</p>
+    <a href="{% url 'home' %}" class="btn btn-primary btn-lg" style="font-size: 1.1rem; padding: 1rem 2.5rem;">Get Started Free</a>
+  </div>
+</div>
+
+<style>
+.card:hover {
+  transform: translateY(-8px);
+}
+@media (max-width: 768px) {
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+{% endblock %}

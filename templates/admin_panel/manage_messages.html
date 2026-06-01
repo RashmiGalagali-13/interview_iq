@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Contact Messages — Admin{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">⚡</div>
+      <div><div class="sidebar-title">Admin Panel</div><div class="sidebar-sub">{{ request.user.username }}</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'admin_dashboard' %}" class="sidebar-link">📊 Dashboard</a>
+      <a href="{% url 'admin_users' %}" class="sidebar-link">👥 Manage Users</a>
+      <a href="{% url 'admin_jobs' %}" class="sidebar-link">💼 Manage Jobs</a>
+      <a href="{% url 'admin_applications' %}" class="sidebar-link">📋 Applications</a>
+      <a href="{% url 'admin_questions' %}" class="sidebar-link">🧠 Interview Questions</a>
+      <a href="{% url 'admin_messages' %}" class="sidebar-link active">📬 Contact Messages</a>
+      <div class="sidebar-divider"></div>
+      <a href="{% url 'home' %}" class="sidebar-link">🏠 View Site</a>
+      <a href="{% url 'logout' %}" class="sidebar-link sidebar-logout">🚪 Logout</a>
+    </nav>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 class="admin-page-title">Contact Messages</h1>
+      <span class="admin-badge">{{ messages_list|length }} messages</span>
+    </div>
+
+    <!-- Filters -->
+    <div class="admin-filters">
+      <form method="get" class="filter-form">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search name, email, or message…" class="filter-input">
+        <select name="is_read" class="filter-select">
+          <option value="">All Status</option>
+          <option value="unread" {% if is_read == 'unread' %}selected{% endif %}>Unread</option>
+          <option value="read" {% if is_read == 'read' %}selected{% endif %}>Read</option>
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        <a href="{% url 'admin_messages' %}" class="btn btn-outline btn-sm">Reset</a>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Name</th><th>Email</th><th>Message</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for msg in messages_list %}
+            <tr>
+              <td class="fw-600">{{ msg.name }}</td>
+              <td class="text-sm">{{ msg.email }}</td>
+              <td class="text-sm" style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ msg.message }}</td>
+              <td class="text-sm text-muted">{{ msg.created_at|date:"M d, Y g:i A" }}</td>
+              <td>
+                {% if msg.is_read %}
+                  <span class="badge badge-gray">Read</span>
+                {% else %}
+                  <span class="badge badge-orange">Unread</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="action-btns">
+                  <form method="post" action="{% url 'admin_toggle_message' msg.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-xs {% if msg.is_read %}btn-warning{% else %}btn-success{% endif %}">
+                      {% if msg.is_read %}Unread{% else %}Mark Read{% endif %}
+                    </button>
+                  </form>
+                  <form method="post" action="{% url 'admin_delete_message' msg.pk %}" style="display:inline;" onsubmit="return confirm('Delete this message from {{ msg.name }}?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-muted py-4">No messages found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

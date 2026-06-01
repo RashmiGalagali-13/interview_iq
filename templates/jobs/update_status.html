@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Review Application — Interview IQ{% endblock %}
+{% block content %}
+<div class="page-container" style="max-width:600px;">
+  <a href="{% url 'view_applications' application.job.pk %}?app_pk={{ application.pk }}" class="btn btn-outline-dark btn-sm mb-2">← Back to Applications</a>
+
+  <div class="card">
+    <div class="card-header"><h2>Review Application</h2></div>
+    <div class="card-body">
+      <div style="background:var(--paper);border-radius:var(--radius-sm);padding:1.25rem;margin-bottom:1.5rem;">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;">{{ application.applicant.full_name }}</div>
+        <div class="text-muted text-sm">Applied for: <strong>{{ application.job.title }}</strong></div>
+        <div class="text-sm mt-1">Match Score: 
+          {% if application.match_score >= 70 %}<span class="match-badge match-high">⚡ {{ application.match_score }}%</span>
+          {% elif application.match_score >= 40 %}<span class="match-badge match-med">{{ application.match_score }}%</span>
+          {% else %}<span class="match-badge match-low">{{ application.match_score }}%</span>{% endif %}
+        </div>
+        {% if application.cover_letter %}
+        <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border);">
+          <strong class="text-sm">Cover Letter:</strong>
+          <p class="text-sm" style="margin-top:0.4rem;color:var(--slate);">{{ application.cover_letter }}</p>
+        </div>
+        {% endif %}
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Update Status</label>
+          <select name="status" class="form-control">
+            {% for val,label in form.fields.status.choices %}<option value="{{ val }}" {% if form.status.value == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Internal Notes (visible to candidate)</label>
+          <textarea name="company_notes" class="form-control" rows="3" placeholder="Add notes for the candidate...">{{ form.company_notes.value|default:'' }}</textarea>
+        </div>
+        <div style="display:flex;gap:1rem;">
+          <button type="submit" class="btn btn-primary">Update Status</button>
+          <a href="{% url 'view_applications' application.job.pk %}" class="btn btn-outline-dark">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

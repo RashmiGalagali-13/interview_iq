@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Interview IQ{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/home-enhancements.css' %}">
+  <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  {% block extra_head %}{% endblock %}
+
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="{% url 'home' %}" class="nav-brand">
+    <div class="logo-mark">IQ</div>
+    Interview IQ
+  </a>
+  <ul class="nav-links">
+    <li><a href="{% url 'job_list' %}">Browse Jobs</a></li>
+    <li><a href="{% url 'question_bank' %}">Interview Prep</a></li>
+    <li><a href="{% url 'contact' %}">Contact</a></li>
+    <li><a href="{% url 'about' %}">About</a></li>
+
+
+    {% if user.is_authenticated %}
+      {% if user.is_admin_user %}
+        <li class="nav-dropdown">
+          <a href="{% url 'admin_dashboard' %}" class="nav-admin-badge">⚡ Admin ▾</a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'admin_users' %}">👥 Users</a></li>
+            <li><a href="{% url 'admin_jobs' %}">💼 Jobs</a></li>
+            <li><a href="{% url 'admin_applications' %}">📋 Applications</a></li>
+            <li><a href="{% url 'admin_questions' %}">🧠 Questions</a></li>
+          </ul>
+        </li>
+      {% elif user.is_company %}
+        <li class="nav-dropdown">
+          <a href="{% url 'company_dashboard' %}" style="pointer-events:none;">Dashboard ▾</a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'company_dashboard' %}">📊 Overview</a></li>
+            <li><a href="{% url 'company_website' %}">🌐 Company Profile</a></li>
+            <li><a href="{% url 'edit_company_profile' %}">✏️ Edit Profile</a></li>
+          </ul>
+        </li>
+        <li><a href="{% url 'post_job' %}" class="btn-nav">+ Post Job</a></li>
+      {% else %}
+        <li class="nav-dropdown">
+          <a href="{% url 'seeker_dashboard' %}" style="pointer-events:none;">My Account ▾</a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'seeker_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'my_applications' %}">📋 My Applications</a></li>
+            <li><a href="{% url 'practice_history' %}">🧠 Practice History</a></li>
+            <li><a href="{% url 'edit_seeker_profile' %}">✏️ Edit Profile</a></li>
+          </ul>
+        </li>
+      {% endif %}
+      <li><a href="{% url 'logout' %}" class="nav-logout">Logout</a></li>
+    {% else %}
+      <li><a href="{% url 'login' %}">Login</a></li>
+      <li><a href="{% url 'register_seeker' %}" class="btn-nav">Register</a></li>
+    {% endif %}
+    <li><button id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button></li>
+  </ul>
+</nav>
+
+{% if messages %}
+<div class="messages-container">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}">
+    <span>{{ message }}</span>
+    <button onclick="this.parentElement.remove()" class="alert-close">×</button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo-mark sm">IQ</div>
+      <span>Interview IQ</span>
+    </div>
+    <p class="footer-copy">© 2025 Interview IQ · Smart Job Matching & Interview Practice Platform</p>
+    <div class="footer-links">
+      <a href="{% url 'about' %}">About</a>
+
+      <a href="{% url 'job_list' %}">Jobs</a>
+      <a href="{% url 'question_bank' %}">Interview Prep</a>
+    </div>
+  </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+  <script src="{% static 'js/home-interactivity.js' %}"></script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

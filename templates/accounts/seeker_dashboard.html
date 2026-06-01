@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard — Interview IQ{% endblock %}
+{% block content %}
+<div class="page-container">
+  <div class="dashboard-grid">
+    <aside>
+      <div class="sidebar-card">
+        <div class="profile-hero">
+          <div class="avatar-circle">{{ profile.full_name|first|upper }}</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;">{{ profile.full_name }}</div>
+          <div style="color:rgba(255,255,255,0.6);font-size:0.82rem;margin-top:0.25rem;">{{ profile.desired_role|default:"Job Seeker" }}</div>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="{% url 'seeker_dashboard' %}" class="active">🏠 Dashboard</a>
+          <a href="{% url 'job_list' %}">🔍 Browse Jobs</a>
+          <a href="{% url 'my_applications' %}">📋 My Applications</a>
+          <a href="{% url 'question_bank' %}">🎤 Interview Prep</a>
+          <a href="{% url 'practice_history' %}">📊 Practice History</a>
+          <a href="{% url 'edit_seeker_profile' %}">✏️ Edit Profile</a>
+          <a href="{% url 'logout' %}">🚪 Logout</a>
+        </nav>
+      </div>
+    </aside>
+    <main>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="value">{{ applications|length }}</div><div class="label">Applications</div></div>
+        <div class="stat-card"><div class="value">{{ saved_jobs|length }}</div><div class="label">Saved Jobs</div></div>
+        <div class="stat-card"><div class="value">{{ profile.experience_years }}</div><div class="label">Years Exp.</div></div>
+        <div class="stat-card"><div class="value">{{ profile.get_skills_list|length }}</div><div class="label">Skills Listed</div></div>
+      </div>
+
+      {% if profile.get_skills_list %}
+      <div class="card mb-2">
+        <div class="card-header"><span style="font-family:'Syne',sans-serif;font-weight:700;">🎯 Recommended Jobs</span><a href="{% url 'job_list' %}" class="btn btn-sm btn-outline-dark">View All</a></div>
+        <div class="card-body">
+          {% if recommended %}
+          <div class="grid-jobs">
+            {% for job in recommended %}
+            <div class="job-card">
+              <div class="job-card-header">
+                <div>
+                  <div class="job-card-company">{{ job.company.company_name }}</div>
+                  <div class="job-card-title">{{ job.title }}</div>
+                </div>
+                {% with score=job.match_score %}
+                  {% if score >= 70 %}<span class="match-badge match-high">⚡ {{ score }}%</span>
+                  {% elif score >= 40 %}<span class="match-badge match-med">{{ score }}%</span>
+                  {% else %}<span class="match-badge match-low">{{ score }}%</span>{% endif %}
+                {% endwith %}
+              </div>
+              <div class="job-meta">
+                <span class="tag">📍 {{ job.location }}</span>
+                <span class="tag tag-accent">{{ job.get_job_type_display }}</span>
+              </div>
+              <a href="{% url 'job_detail' job.pk %}" class="btn btn-sm btn-primary" style="margin-top:0.5rem;">View Job</a>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty-state"><div class="icon">🎯</div><h3>No recommendations yet</h3><p>Add skills to your profile to get matched with jobs.</p><a href="{% url 'edit_seeker_profile' %}" class="btn btn-sm btn-primary mt-1">Update Profile</a></div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="card">
+        <div class="card-header"><span style="font-family:'Syne',sans-serif;font-weight:700;">📋 Recent Applications</span><a href="{% url 'my_applications' %}" class="btn btn-sm btn-outline-dark">View All</a></div>
+        {% if applications %}
+        <div class="table-container" style="border:none;border-radius:0;">
+          <table>
+            <thead><tr><th>Job</th><th>Company</th><th>Status</th><th>Applied</th></tr></thead>
+            <tbody>
+              {% for app in applications %}
+              <tr>
+                <td><strong>{{ app.job.title }}</strong></td>
+                <td>{{ app.job.company.company_name }}</td>
+                <td><span class="status-badge status-{{ app.status }}">{{ app.get_status_display }}</span></td>
+                <td class="text-muted text-sm">{{ app.applied_at|date:"M d, Y" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="card-body"><div class="empty-state"><div class="icon">📭</div><h3>No applications yet</h3><a href="{% url 'job_list' %}" class="btn btn-sm btn-primary mt-1">Browse Jobs</a></div></div>
+        {% endif %}
+      </div>
+    </main>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Manage Interview Questions — Admin{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">⚡</div>
+      <div><div class="sidebar-title">Admin Panel</div><div class="sidebar-sub">{{ request.user.username }}</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'admin_dashboard' %}" class="sidebar-link">📊 Dashboard</a>
+      <a href="{% url 'admin_users' %}" class="sidebar-link">👥 Manage Users</a>
+      <a href="{% url 'admin_jobs' %}" class="sidebar-link">💼 Manage Jobs</a>
+      <a href="{% url 'admin_applications' %}" class="sidebar-link">📋 Applications</a>
+      <a href="{% url 'admin_questions' %}" class="sidebar-link active">🧠 Interview Questions</a>
+      <div class="sidebar-divider"></div>
+      <a href="{% url 'home' %}" class="sidebar-link">🏠 View Site</a>
+      <a href="{% url 'logout' %}" class="sidebar-link sidebar-logout">🚪 Logout</a>
+    </nav>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 class="admin-page-title">Interview Questions</h1>
+      <a href="{% url 'admin_add_question' %}" class="btn btn-primary btn-sm">+ Add Question</a>
+    </div>
+
+    <div class="admin-filters">
+      <form method="get" class="filter-form">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search question or role…" class="filter-input">
+        <select name="category" class="filter-select">
+          <option value="">All Categories</option>
+          {% for val, label in CATEGORIES %}
+          <option value="{{ val }}" {% if category == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <select name="company" class="filter-select">
+          <option value="">All (Global + Company)</option>
+          <option value="0" {% if selected_company == '0' %}selected{% endif %}>Global Only</option>
+          {% for co in companies %}
+          <option value="{{ co.pk }}" {% if selected_company == co.pk|stringformat:'s' %}selected{% endif %}>{{ co.company_name }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        <a href="{% url 'admin_questions' %}" class="btn btn-outline btn-sm">Reset</a>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Question</th><th>Category</th><th>Difficulty</th><th>Role</th><th>Company</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for q in questions %}
+            <tr>
+              <td>
+                <div class="fw-500" style="max-width:300px;">{{ q.question|truncatechars:80 }}</div>
+              </td>
+              <td><span class="tag">{{ q.get_category_display }}</span></td>
+              <td>
+                <span class="diff-badge diff-{{ q.difficulty }}">{{ q.get_difficulty_display }}</span>
+              </td>
+              <td class="text-sm text-muted">{{ q.role_tag|default:"—" }}</td>
+              <td class="text-sm">
+                {% if q.company %}
+                  <span class="company-tag">{{ q.company.company_name }}</span>
+                {% else %}
+                  <span class="text-muted">Global</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="action-btns">
+                  <a href="{% url 'admin_edit_question' q.pk %}" class="btn btn-xs btn-outline">Edit</a>
+                  <form method="post" action="{% url 'admin_delete_question' q.pk %}" style="display:inline;" onsubmit="return confirm('Delete this question?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-muted py-4">No questions found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

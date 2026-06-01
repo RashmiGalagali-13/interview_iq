@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Practice History — Interview IQ{% endblock %}
+{% block content %}
+<div class="page-container">
+  <div class="page-header">
+    <div><h1>Practice History</h1><p>{{ sessions|length }} session{{ sessions|length|pluralize }} completed</p></div>
+    <a href="{% url 'question_bank' %}" class="btn btn-primary">Practice Now</a>
+  </div>
+
+  {% if sessions %}
+  <div class="stats-grid" style="max-width:500px;margin-bottom:1.5rem;">
+    <div class="stat-card"><div class="value">{{ sessions|length }}</div><div class="label">Total Sessions</div></div>
+    <div class="stat-card"><div class="value">{{ avg_score }}%</div><div class="label">Avg Score</div></div>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead><tr><th>Question</th><th>Category</th><th>Score</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for s in sessions %}
+        <tr>
+          <td style="max-width:350px;"><a href="{% url 'practice' s.question.pk %}" style="color:var(--accent);">{{ s.question.question|truncatechars:80 }}</a></td>
+          <td><span class="tag">{{ s.question.get_category_display }}</span></td>
+          <td>
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <span style="font-weight:700;{% if s.score >= 70 %}color:var(--success);{% elif s.score >= 40 %}color:var(--warning);{% else %}color:var(--danger);{% endif %}">{{ s.score }}%</span>
+              <div class="progress-wrap" style="width:80px;"><div class="progress-fill {% if s.score >= 70 %}high{% elif s.score >= 40 %}med{% endif %}" style="width:{{ s.score }}%;"></div></div>
+            </div>
+          </td>
+          <td class="text-muted text-sm">{{ s.attempted_at|date:"M d, Y" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state"><div class="icon">📊</div><h3>No practice sessions yet</h3><p>Start practicing interview questions to see your progress here.</p><a href="{% url 'question_bank' %}" class="btn btn-primary mt-1">Start Practicing</a></div>
+  {% endif %}
+</div>
+{% endblock %}

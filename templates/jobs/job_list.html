@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Browse Jobs — Interview IQ{% endblock %}
+{% block content %}
+<div class="page-container">
+  <div class="page-header">
+    <div><h1>Browse Jobs</h1><p>{{ job_data|length }} jobs found{% if search %} for "{{ search }}"{% endif %}</p></div>
+    {% if user.is_authenticated and user.is_company %}<a href="{% url 'post_job' %}" class="btn btn-primary">+ Post a Job</a>{% endif %}
+  </div>
+
+  <form method="get" class="search-bar">
+    <div class="search-field" style="flex:2;">
+      <label>Search</label>
+      <input type="text" name="q" value="{{ search }}" class="form-control" placeholder="Job title, skills, keywords...">
+    </div>
+    <div class="search-field">
+      <label>Location</label>
+      <input type="text" name="location" value="{{ location }}" class="form-control" placeholder="City or Remote">
+    </div>
+    <div class="search-field">
+      <label>Job Type</label>
+      <select name="type" class="form-control">
+        <option value="">All Types</option>
+        {% for val,label in JOB_TYPES %}<option value="{{ val }}" {% if job_type == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="search-field">
+      <label>Experience</label>
+      <select name="experience" class="form-control">
+        <option value="">All Levels</option>
+        {% for val,label in EXPERIENCE_LEVELS %}<option value="{{ val }}" {% if experience == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+    {% if search or location or job_type or experience %}<a href="{% url 'job_list' %}" class="btn btn-outline-dark">Clear</a>{% endif %}
+  </form>
+
+  {% if job_data %}
+  <div class="grid-jobs">
+    {% for item in job_data %}
+    {% with job=item.job score=item.score %}
+    <div class="job-card">
+      <div class="job-card-header">
+        <div>
+          <div class="job-card-company">🏢 {{ job.company.company_name }}</div>
+          <a href="{% url 'job_detail' job.pk %}"><div class="job-card-title">{{ job.title }}</div></a>
+        </div>
+        {% if user.is_authenticated and user.is_jobseeker %}
+          {% if score >= 70 %}<span class="match-badge match-high">⚡ {{ score }}%</span>
+          {% elif score >= 40 %}<span class="match-badge match-med">{{ score }}%</span>
+          {% elif score > 0 %}<span class="match-badge match-low">{{ score }}%</span>{% endif %}
+        {% endif %}
+      </div>
+      <div class="job-meta">
+        <span class="tag">📍 {{ job.location }}</span>
+        <span class="tag tag-accent">{{ job.get_job_type_display }}</span>
+        <span class="tag">{{ job.get_experience_level_display }}</span>
+        {% if job.salary_min and job.salary_max %}<span class="tag tag-gold">💰 ${{ job.salary_min|floatformat:0 }}–${{ job.salary_max|floatformat:0 }}</span>{% endif %}
+      </div>
+      <p class="text-sm text-muted" style="margin:0.5rem 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ job.description|truncatewords:25 }}</p>
+      <div class="skills-preview">
+        {% for skill in job.get_skills_list|slice:":5" %}
+        <span class="skill-pill">{{ skill }}</span>
+        {% endfor %}
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;">
+        <span class="text-xs text-muted">{{ job.created_at|timesince }} ago</span>
+        <div style="display:flex;gap:0.5rem;">
+          {% if user.is_authenticated and user.is_jobseeker %}
+          <a href="{% url 'save_job' job.pk %}" class="btn btn-sm btn-outline-dark">🔖</a>
+          {% endif %}
+          <a href="{% url 'job_detail' job.pk %}" class="btn btn-sm btn-primary">View →</a>
+        </div>
+      </div>
+    </div>
+    {% endwith %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state"><div class="icon">🔍</div><h3>No jobs found</h3><p>Try adjusting your search filters.</p><a href="{% url 'job_list' %}" class="btn btn-sm btn-primary mt-1">Clear Filters</a></div>
+  {% endif %}
+</div>
+{% endblock %}

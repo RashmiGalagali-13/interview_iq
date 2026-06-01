@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Contact Us - Interview IQ{% endblock %}
+
+{% block content %}
+<div class="page-container">
+  <div class="contact-form-wrapper" style="margin: 2rem auto; max-width: 700px;">
+    <h3 style="text-align: center; font-size: 1.8rem; margin-bottom: 2rem; color: var(--accent);">Get In Touch</h3>
+    
+    <div class="info-grid" style="margin-bottom: 2.5rem;">
+      <div class="info-card">
+        <div class="info-icon info-email">📧</div>
+        <div>
+          <h4 style="margin-bottom: 0.25rem; font-size: 1.1rem;">Email Us</h4>
+          <p style="color: var(--slate); margin: 0;">hello@interviewiq.com</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon info-phone">📞</div>
+        <div>
+          <h4 style="margin-bottom: 0.25rem; font-size: 1.1rem;">Phone</h4>
+          <p style="color: var(--slate); margin: 0;">+1 (555) 123-4567</p>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon" style="background: var(--accent-dim); color: var(--accent);">📍</div>
+        <div>
+          <h4 style="margin-bottom: 0.25rem; font-size: 1.1rem;">Location</h4>
+          <p style="color: var(--slate); margin: 0;">San Francisco, CA</p>
+        </div>
+      </div>
+    </div>
+
+    <form id="contact-form" method="post" action="{% url 'contact' %}" class="contact-form">
+      {% csrf_token %}
+      <div>
+        <label for="id_name" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Full Name *</label>
+        <input type="text" id="id_name" name="name" required style="width: 100%; padding: 0.875rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; transition: border-color 0.2s;">
+      </div>
+      <div>
+        <label for="id_email" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email Address *</label>
+        <input type="email" id="id_email" name="email" required style="width: 100%; padding: 0.875rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; transition: border-color 0.2s;">
+      </div>
+      <div>
+        <label for="id_subject" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Subject *</label>
+        <input type="text" id="id_subject" name="subject" required style="width: 100%; padding: 0.875rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; transition: border-color 0.2s;">
+      </div>
+      <div>
+        <label for="id_message" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Message *</label>
+        <textarea id="id_message" name="message" required rows="5" style="width: 100%; padding: 0.875rem; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; font-family: inherit; resize: vertical; transition: border-color 0.2s;"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary form-submit" style="font-size: 1.1rem; padding: 1rem 3rem;">Send Message</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

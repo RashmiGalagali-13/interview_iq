@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Register Company — Interview IQ{% endblock %}
+{% block content %}
+<div class="form-wrapper">
+  <div class="form-card" style="max-width:520px;">
+    <div style="text-align:center;margin-bottom:1.75rem;">
+      <div style="font-size:2rem;margin-bottom:0.5rem;">🏢</div>
+      <h1 class="form-card-title">Register Your Company</h1>
+      <p class="form-card-sub">Post jobs and find the best talent</p>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Company Name</label>
+          <input type="text" name="company_name" class="form-control" placeholder="Acme Inc.">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Industry</label>
+          <input type="text" name="industry" class="form-control" placeholder="Technology">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" placeholder="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Company Email</label>
+        <input type="email" name="email" class="form-control" placeholder="hr@company.com">
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Password">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm</label>
+          <input type="password" name="confirm_password" class="form-control" placeholder="Confirm">
+        </div>
+      </div>
+      {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors|join:", " }}</div>{% endif %}
+      <button type="submit" class="btn btn-primary btn-full">Register Company</button>
+    </form>
+    <div class="form-divider"><span>Already registered?</span></div>
+    <a href="{% url 'login' %}" class="btn btn-outline-dark btn-full">Sign In</a>
+  </div>
+</div>
+{% endblock %}

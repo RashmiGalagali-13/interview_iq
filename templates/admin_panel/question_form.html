@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Question — Admin{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">⚡</div>
+      <div><div class="sidebar-title">Admin Panel</div><div class="sidebar-sub">{{ request.user.username }}</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'admin_dashboard' %}" class="sidebar-link">📊 Dashboard</a>
+      <a href="{% url 'admin_users' %}" class="sidebar-link">👥 Manage Users</a>
+      <a href="{% url 'admin_jobs' %}" class="sidebar-link">💼 Manage Jobs</a>
+      <a href="{% url 'admin_applications' %}" class="sidebar-link">📋 Applications</a>
+      <a href="{% url 'admin_questions' %}" class="sidebar-link active">🧠 Interview Questions</a>
+      <div class="sidebar-divider"></div>
+      <a href="{% url 'home' %}" class="sidebar-link">🏠 View Site</a>
+      <a href="{% url 'logout' %}" class="sidebar-link sidebar-logout">🚪 Logout</a>
+    </nav>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 class="admin-page-title">{{ action }} Interview Question</h1>
+      <a href="{% url 'admin_questions' %}" class="btn btn-outline btn-sm">← Back</a>
+    </div>
+
+    <div class="admin-card" style="max-width:760px;">
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Category *</label>
+            <select name="category" class="form-control" required>
+              {% for val, label in CATEGORIES %}
+              <option value="{{ val }}" {% if question.category == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Difficulty</label>
+            <select name="difficulty" class="form-control">
+              {% for val, label in DIFFICULTIES %}
+              <option value="{{ val }}" {% if question.difficulty == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Role Tag</label>
+            <input type="text" name="role_tag" class="form-control" placeholder="e.g. Software Engineer, HR" value="{{ question.role_tag|default:'' }}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Assign to Company</label>
+            <select name="company" class="form-control">
+              <option value="">— Global Question —</option>
+              {% for co in companies %}
+              <option value="{{ co.pk }}" {% if question.company_id == co.pk %}selected{% endif %}>{{ co.company_name }}</option>
+              {% endfor %}
+            </select>
+            <small class="form-hint">Leave blank to make this a global question.</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Question *</label>
+          <textarea name="question" class="form-control" rows="3" required placeholder="Enter the interview question…">{{ question.question|default:'' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Sample Answer *</label>
+          <textarea name="sample_answer" class="form-control" rows="5" required placeholder="Enter a model answer…">{{ question.sample_answer|default:'' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tips (optional)</label>
+          <textarea name="tips" class="form-control" rows="2" placeholder="Tips for answering this question…">{{ question.tips|default:'' }}</textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">{{ action }} Question</button>
+          <a href="{% url 'admin_questions' %}" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+{% endblock %}

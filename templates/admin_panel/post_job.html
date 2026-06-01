@@ -1,0 +1,123 @@
+admin{% extends 'base.html' %}
+{% block title %}{% if action == 'Edit' %}Edit Job{% else %}Post a Job{% endif %} — Admin Panel{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">⚡</div>
+      <div>
+        <div class="sidebar-title">Admin Panel</div>
+        <div class="sidebar-sub">{{ request.user.username }}</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'admin_dashboard' %}" class="sidebar-link">📊 Dashboard</a>
+      <a href="{% url 'admin_users' %}" class="sidebar-link">👥 Manage Users</a>
+      <a href="{% url 'admin_jobs' %}" class="sidebar-link active">💼 Manage Jobs</a>
+      <a href="{% url 'admin_applications' %}" class="sidebar-link">📋 Applications</a>
+      <a href="{% url 'admin_questions' %}" class="sidebar-link">🧠 Interview Questions</a>
+      <div class="sidebar-divider"></div>
+      <a href="{% url 'home' %}" class="sidebar-link">🏠 View Site</a>
+      <a href="{% url 'logout' %}" class="sidebar-link sidebar-logout">🚪 Logout</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 class="admin-page-title">{% if action == 'Edit' %}Edit Job{% else %}Post a New Job{% endif %}</h1>
+      <a href="{% url 'admin_jobs' %}" class="btn btn-outline-dark">← Back to Jobs</a>
+    </div>
+
+    <div class="admin-card" style="max-width:900px;">
+      <form method="post">
+        {% csrf_token %}
+        
+        <!-- Company Selection (Admin only) -->
+        <div class="form-group">
+          <label class="form-label">Company *</label>
+          <select name="company" class="form-control" required>
+            <option value="">Select Company</option>
+            {% for company in companies %}
+<option value="{{ company.pk }}" {% if job and job.company.pk == company.pk %}selected{% endif %}>{{ company.company_name }} ({{ company.industry }})</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Job Title *</label>
+<input type="text" name="title" class="form-control" value="{{ form.title.value|default:job.title|default:''|default:form.title.value }}" placeholder="e.g. Senior Python Developer" required>
+            {% if form.title.errors %}<div class="form-error">{{ form.title.errors|join:", " }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location *</label>
+            <input type="text" name="location" class="form-control" value="{{ form.location.value|default:job.location|default:'' }}" placeholder="e.g. Bangalore / Remote" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Job Description *</label>
+          <textarea name="description" class="form-control" rows="5" placeholder="Describe the role, responsibilities, and what a typical day looks like..." required>{{ form.description.value|default:job.description|default:'' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Requirements *</label>
+          <textarea name="requirements" class="form-control" rows="4" placeholder="List qualifications, experience, and must-haves..." required>{{ form.requirements.value|default:job.requirements|default:'' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Required Skills (comma-separated) *</label>
+          <input type="text" name="skills_required" class="form-control" value="{{ form.skills_required.value|default:job.skills_required|default:'' }}" placeholder="e.g. Python, Django, PostgreSQL, REST APIs" required>
+          <small class="text-muted">These are used for candidate matching</small>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Job Type</label>
+            <select name="job_type" class="form-control">
+              {% for val,label in JOB_TYPES %}<option value="{{ val }}" {% if form.job_type.value == val or job.job_type == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Experience Level</label>
+            <select name="experience_level" class="form-control">
+              {% for val,label in EXPERIENCE_LEVELS %}<option value="{{ val }}" {% if form.experience_level.value == val or job.experience_level == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Min Salary (USD/year)</label>
+            <input type="number" name="salary_min" class="form-control" value="{{ form.salary_min.value|default:job.salary_min|default:'' }}" placeholder="e.g. 60000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Max Salary</label>
+            <input type="number" name="salary_max" class="form-control" value="{{ form.salary_max.value|default:job.salary_max|default:'' }}" placeholder="e.g. 100000">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Application Deadline</label>
+            <input type="date" name="deadline" class="form-control" value="{{ form.deadline.value|default:job.deadline|default:'' }}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-control">
+              {% for val,label in STATUS %}<option value="{{ val }}" {% if form.status.value == val or job.status == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+          <button type="submit" class="btn btn-primary btn-lg">{% if action == 'Edit' %}Save Changes{% else %}Post Job{% endif %}</button>
+          <a href="{% url 'admin_jobs' %}" class="btn btn-outline-dark">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+{% endblock %}

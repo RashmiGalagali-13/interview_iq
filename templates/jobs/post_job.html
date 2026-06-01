@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}{% if edit %}Edit Job{% else %}Post a Job{% endif %} — Interview IQ{% endblock %}
+{% block content %}
+<div class="page-container" style="max-width:760px;">
+  <div class="page-header">
+    <div><h1>{% if edit %}Edit Job: {{ job.title }}{% else %}Post a New Job{% endif %}</h1></div>
+    <a href="{% url 'company_dashboard' %}" class="btn btn-outline-dark">← Dashboard</a>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Job Title *</label>
+            <input type="text" name="title" class="form-control" value="{{ form.title.value|default:'' }}" placeholder="e.g. Senior Python Developer">
+            {% if form.title.errors %}<div class="form-error">{{ form.title.errors|join:", " }}</div>{% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location *</label>
+            <input type="text" name="location" class="form-control" value="{{ form.location.value|default:'' }}" placeholder="e.g. Bangalore / Remote">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Job Description *</label>
+          <textarea name="description" class="form-control" rows="5" placeholder="Describe the role, responsibilities, and what a typical day looks like...">{{ form.description.value|default:'' }}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Requirements *</label>
+          <textarea name="requirements" class="form-control" rows="4" placeholder="List qualifications, experience, and must-haves...">{{ form.requirements.value|default:'' }}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Required Skills (comma-separated) *</label>
+          <input type="text" name="skills_required" class="form-control" value="{{ form.skills_required.value|default:'' }}" placeholder="e.g. Python, Django, PostgreSQL, REST APIs">
+          <small class="text-muted">These are used for candidate matching</small>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Job Type</label>
+            <select name="job_type" class="form-control">
+              {% for val,label in form.fields.job_type.choices %}<option value="{{ val }}" {% if form.job_type.value == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Experience Level</label>
+            <select name="experience_level" class="form-control">
+              {% for val,label in form.fields.experience_level.choices %}<option value="{{ val }}" {% if form.experience_level.value == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Min Salary (USD/year)</label>
+            <input type="number" name="salary_min" class="form-control" value="{{ form.salary_min.value|default:'' }}" placeholder="e.g. 60000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Max Salary</label>
+            <input type="number" name="salary_max" class="form-control" value="{{ form.salary_max.value|default:'' }}" placeholder="e.g. 100000">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Application Deadline</label>
+            <input type="date" name="deadline" class="form-control" value="{{ form.deadline.value|default:'' }}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-control">
+              {% for val,label in form.fields.status.choices %}<option value="{{ val }}" {% if form.status.value == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1rem;">
+          <button type="submit" class="btn btn-primary btn-lg">{% if edit %}Save Changes{% else %}Post Job{% endif %}</button>
+          <a href="{% url 'company_dashboard' %}" class="btn btn-outline-dark">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

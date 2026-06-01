@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ request.user.company_profile.company_name }} — Profile{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+{% with profile=request.user.company_profile %}
+<div class="page-container">
+  <div class="dashboard-grid">
+    <aside>
+      <div class="sidebar-card">
+        <div class="profile-hero">
+          {% if profile.logo %}
+            <img src="{{ profile.logo.url }}" alt="{{ profile.company_name }}" class="avatar-circle" style="object-fit:cover;">
+          {% else %}
+            <div class="avatar-circle">{{ profile.company_name|first }}</div>
+          {% endif %}
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;">{{ profile.company_name }}</div>
+          <div style="color:rgba(255,255,255,0.6);font-size:0.82rem;margin-top:0.25rem;">{{ profile.industry }}</div>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="{% url 'company_dashboard' %}">🏠 Dashboard</a>
+          <a href="{% url 'post_job' %}">➕ Post Job</a>
+          <a href="{% url 'company_website' %}" class="active">🌐 Company Profile</a>
+          <a href="{% url 'edit_company_profile' %}">✏️ Edit Profile</a>
+          <a href="{% url 'logout' %}">🚪 Logout</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main>
+      <div class="page-header">
+        <h1>{{ profile.company_name }}</h1>
+        <p class="text-muted">Your public company profile — seen by job seekers</p>
+      </div>
+
+      <!-- Tab Navigation -->
+      <nav class="tab-nav">
+        <a href="#" data-tab="about" class="active">About Us</a>
+        <a href="#" data-tab="jobs">Open Jobs</a>
+        <a href="#" data-tab="interview">🧠 Interview Prep</a>
+        <a href="#" data-tab="contact">Contact</a>
+      </nav>
+
+      <!-- ============ ABOUT TAB ============ -->
+      <div id="about" class="tab-content active">
+        <div class="company-desc">
+          <h2>{{ profile.company_name }}</h2>
+          <p style="font-size:1.05rem;color:var(--slate);max-width:700px;margin:0 auto;line-height:1.7;">
+            {{ profile.description|default:"No description provided yet. Edit your profile to add a company description." }}
+          </p>
+        </div>
+
+        <div class="stats-grid stats-section">
+          {% if profile.founded_year %}<div class="stat-card"><div class="value">{{ profile.founded_year }}</div><div class="label">Founded</div></div>{% endif %}
+          <div class="stat-card"><div class="value">{{ profile.company_size|default:"—" }}</div><div class="label">Company Size</div></div>
+          <div class="stat-card"><div class="value">{{ profile.jobs.filter(status='active').count }}</div><div class="label">Open Positions</div></div>
+        </div>
+
+        {% if profile.website %}
+        <div style="text-align:center;margin-bottom:2rem;">
+          <a href="{{ profile.website }}" target="_blank" class="btn btn-outline">🌐 Visit Website</a>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- ============ JOBS TAB ============ -->
+      <div id="jobs" class="tab-content">
+        {% with active_jobs=profile.jobs.all %}
+        {% if active_jobs %}
+          <div style="display:grid;gap:1rem;">
+            {% for job in active_jobs %}
+            <div class="job-list-item" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;">
+              <div style="display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:0.5rem;">
+                <div>
+                  <h3 style="margin:0 0 0.35rem;font-size:1.05rem;">{{ job.title }}</h3>
+                  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <span class="tag">{{ job.get_job_type_display }}</span>
+                    <span class="tag">{{ job.location }}</span>
+                    <span class="tag">{{ job.get_experience_level_display }}</span>
+                    <span class="status-badge status-{{ job.status }}">{{ job.get_status_display }}</span>
+                  </div>
+                </div>
+                <a href="{% url 'job_detail' job.pk %}" class="btn btn-primary btn-sm">View Job</a>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <div class="empty-icon">💼</div>
+            <h3>No open positions</h3>
+            <p>Post your first job to attract candidates.</p>
+            <a href="{% url 'post_job' %}" class="btn btn-primary mt-2">+ Post a Job</a>
+          </div>
+        {% endif %}
+        {% endwith %}
+      </div>
+
+      <!-- ============ INTERVIEW PREP TAB ============ -->
+      <div id="interview" class="tab-content">
+        <div class="interview-prep-header">
+          <div>
+            <h2 style="margin:0 0 0.5rem;">Interview Preparation</h2>
+            <p class="text-muted">Questions candidates can expect when interviewing at {{ profile.company_name }}.</p>
+          </div>
+          <a href="{% url 'company_interview_prep' profile.pk %}" class="btn btn-outline btn-sm" target="_blank">
+            🔗 Public View
+          </a>
+        </div>
+
+        {% with qs=profile.interview_questions.all %}
+        {% if qs %}
+          <div class="prep-summary">
+            <div class="prep-stat"><strong>{{ qs.count }}</strong><span>Questions</span></div>
+            <div class="prep-stat"><strong>{{ qs.filter(category='behavioral').count }}</strong><span>Behavioral</span></div>
+            <div class="prep-stat"><strong>{{ qs.filter(category='technical').count }}</strong><span>Technical</span></div>
+          </div>
+          <div class="prep-question-list">
+            {% for q in qs %}
+            <div class="prep-q-row">
+              <div class="prep-q-meta">
+                <span class="tag">{{ q.get_category_display }}</span>
+                <span class="diff-badge diff-{{ q.difficulty }}">{{ q.get_difficulty_display }}</span>
+              </div>
+              <p class="prep-q-text">{{ q.question }}</p>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <div class="empty-icon">🧠</div>
+            <h3>No interview questions yet</h3>
+            <p>Ask your platform admin to add company-specific interview questions.</p>
+          </div>
+        {% endif %}
+        {% endwith %}
+      </div>
+
+      <!-- ============ CONTACT TAB ============ -->
+      <div id="contact" class="tab-content">
+        <div class="info-grid">
+          {% if profile.location %}
+          <div class="info-card">
+            <div class="info-icon info-location">📍</div>
+            <div>
+              <h4 style="font-family:'Syne';font-weight:700;margin-bottom:0.25rem;">Location</h4>
+              <p style="color:var(--slate);margin:0;">{{ profile.location }}</p>
+            </div>
+          </div>
+          {% endif %}
+          {% if profile.website %}
+          <div class="info-card">
+            <div class="info-icon info-email">🌐</div>
+            <div>
+              <h4 style="font-family:'Syne';font-weight:700;margin-bottom:0.25rem;">Website</h4>
+              <a href="{{ profile.website }}" target="_blank" style="color:var(--accent);">{{ profile.website }}</a>
+            </div>
+          </div>
+          {% endif %}
+          <div class="info-card">
+            <div class="info-icon info-phone">✉️</div>
+            <div>
+              <h4 style="font-family:'Syne';font-weight:700;margin-bottom:0.25rem;">Email</h4>
+              <p style="color:var(--slate);margin:0;">{{ request.user.email }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+{% endwith %}
+{% endblock %}

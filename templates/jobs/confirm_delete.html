@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Delete Job — Interview IQ{% endblock %}
+{% block content %}
+<div class="page-container" style="max-width:500px;">
+  <div class="card" style="text-align:center;padding:3rem 2rem;">
+    <div style="font-size:3rem;margin-bottom:1rem;">⚠️</div>
+    <h2 style="margin-bottom:0.5rem;">Delete Job?</h2>
+    <p class="text-muted" style="margin-bottom:1.5rem;">This will permanently delete "<strong>{{ job.title }}</strong>" and all {{ job.applications.count }} application{{ job.applications.count|pluralize }}.</p>
+    <form method="post" style="display:flex;gap:1rem;justify-content:center;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Yes, Delete</button>
+      <a href="{% url 'company_dashboard' %}" class="btn btn-outline-dark">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

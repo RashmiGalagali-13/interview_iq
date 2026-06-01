@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Interview Prep — {{ company.company_name }}{% endblock %}
+{% block content %}
+<div class="company-prep-hero">
+  <div class="prep-hero-inner">
+    <div class="prep-company-badge">
+      {% if company.logo %}
+        <img src="{{ company.logo.url }}" alt="{{ company.company_name }}" class="prep-logo">
+      {% else %}
+        <div class="prep-logo-placeholder">{{ company.company_name|first }}</div>
+      {% endif %}
+    </div>
+    <div class="prep-hero-text">
+      <p class="prep-hero-eyebrow">Interview Preparation</p>
+      <h1 class="prep-hero-title">{{ company.company_name }}</h1>
+      <p class="prep-hero-sub">Practice {{ questions|length }} curated interview question{{ questions|length|pluralize }} for {{ company.company_name }} roles</p>
+    </div>
+  </div>
+</div>
+
+<div class="container prep-container">
+
+  <!-- Filters -->
+  <div class="prep-filters">
+    <form method="get" class="prep-filter-form">
+      <select name="category" class="filter-pill" onchange="this.form.submit()">
+        <option value="">All Categories</option>
+        {% for val, label in CATEGORIES %}
+        <option value="{{ val }}" {% if selected_category == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+      <select name="difficulty" class="filter-pill" onchange="this.form.submit()">
+        <option value="">All Difficulties</option>
+        {% for val, label in DIFFICULTIES %}
+        <option value="{{ val }}" {% if selected_difficulty == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </form>
+  </div>
+
+  {% if questions %}
+  <div class="prep-questions-grid">
+    {% for q in questions %}
+    <div class="prep-question-card">
+      <div class="prep-card-header">
+        <span class="tag">{{ q.get_category_display }}</span>
+        <span class="diff-badge diff-{{ q.difficulty }}">{{ q.get_difficulty_display }}</span>
+        {% if q.role_tag %}<span class="role-tag">{{ q.role_tag }}</span>{% endif %}
+      </div>
+      <h3 class="prep-question-text">{{ q.question }}</h3>
+      <div class="prep-card-actions">
+        {% if user.is_authenticated and user.is_jobseeker %}
+          <a href="{% url 'practice' q.pk %}" class="btn btn-primary btn-sm">✍️ Practice Answer</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline btn-sm">Login to Practice</a>
+        {% endif %}
+        <button class="btn btn-ghost btn-sm" onclick="toggleHint({{ q.pk }})">💡 Show Tips</button>
+      </div>
+      {% if q.tips %}
+      <div class="prep-hint" id="hint-{{ q.pk }}" style="display:none;">
+        <div class="hint-label">💡 Tips</div>
+        <p>{{ q.tips }}</p>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🧠</div>
+    <h3>No questions yet</h3>
+    <p>{{ company.company_name }} hasn't added interview questions yet. Check back later!</p>
+    <a href="{% url 'question_bank' %}" class="btn btn-primary mt-2">Browse Global Questions</a>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+function toggleHint(id) {
+  const el = document.getElementById('hint-' + id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

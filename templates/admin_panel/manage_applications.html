@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Manage Applications — Admin{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">⚡</div>
+      <div><div class="sidebar-title">Admin Panel</div><div class="sidebar-sub">{{ request.user.username }}</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'admin_dashboard' %}" class="sidebar-link">📊 Dashboard</a>
+      <a href="{% url 'admin_users' %}" class="sidebar-link">👥 Manage Users</a>
+      <a href="{% url 'admin_jobs' %}" class="sidebar-link">💼 Manage Jobs</a>
+      <a href="{% url 'admin_applications' %}" class="sidebar-link active">📋 Applications</a>
+      <a href="{% url 'admin_questions' %}" class="sidebar-link">🧠 Interview Questions</a>
+      <div class="sidebar-divider"></div>
+      <a href="{% url 'home' %}" class="sidebar-link">🏠 View Site</a>
+      <a href="{% url 'logout' %}" class="sidebar-link sidebar-logout">🚪 Logout</a>
+    </nav>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 class="admin-page-title">Manage Applications</h1>
+      <span class="admin-badge">{{ applications|length }} records</span>
+    </div>
+
+    <div class="admin-filters">
+      <form method="get" class="filter-form">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search applicant, job, company…" class="filter-input">
+        <select name="status" class="filter-select">
+          <option value="">All Statuses</option>
+          {% for val, label in STATUS_CHOICES %}
+          <option value="{{ val }}" {% if status == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        <a href="{% url 'admin_applications' %}" class="btn btn-outline btn-sm">Reset</a>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Applicant</th><th>Job</th><th>Company</th><th>Match</th><th>Status</th><th>Applied</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for app in applications %}
+            <tr>
+              <td>
+                <div class="fw-600">{{ app.applicant.full_name }}</div>
+                <div class="text-sm text-muted">{{ app.applicant.user.email }}</div>
+              </td>
+              <td class="fw-500">{{ app.job.title }}</td>
+              <td class="text-sm">{{ app.job.company.company_name }}</td>
+              <td>
+                <div class="match-bar-sm">
+                  <div class="match-fill" style="width:{{ app.match_score }}%"></div>
+                </div>
+                <div class="text-xs text-center">{{ app.match_score }}%</div>
+              </td>
+              <td>
+                <form method="post" action="{% url 'admin_update_application' app.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <select name="status" class="status-select status-{{ app.status }}" onchange="this.form.submit()">
+                    {% for val, label in STATUS_CHOICES %}
+                    <option value="{{ val }}" {% if app.status == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </form>
+              </td>
+              <td class="text-sm text-muted">{{ app.applied_at|date:"M d, Y" }}</td>
+              <td>
+                {% if app.resume %}
+                <a href="{{ app.resume.url }}" class="btn btn-xs btn-outline" target="_blank">Resume</a>
+                {% else %}
+                <span class="text-muted text-xs">No resume</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center text-muted py-4">No applications found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

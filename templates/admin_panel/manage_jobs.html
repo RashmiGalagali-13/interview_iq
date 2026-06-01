@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}Manage Jobs — Admin{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">⚡</div>
+      <div><div class="sidebar-title">Admin Panel</div><div class="sidebar-sub">{{ request.user.username }}</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'admin_dashboard' %}" class="sidebar-link">📊 Dashboard</a>
+      <a href="{% url 'admin_users' %}" class="sidebar-link">👥 Manage Users</a>
+      <a href="{% url 'admin_jobs' %}" class="sidebar-link active">💼 Manage Jobs</a>
+      <a href="{% url 'admin_applications' %}" class="sidebar-link">📋 Applications</a>
+      <a href="{% url 'admin_questions' %}" class="sidebar-link">🧠 Interview Questions</a>
+      <div class="sidebar-divider"></div>
+      <a href="{% url 'home' %}" class="sidebar-link">🏠 View Site</a>
+      <a href="{% url 'logout' %}" class="sidebar-link sidebar-logout">🚪 Logout</a>
+    </nav>
+  </aside>
+  <main class="admin-main">
+<div class="admin-topbar">
+      <h1 class="admin-page-title">Manage Jobs</h1>
+      <div style="display:flex;gap:0.75rem;align-items:center;">
+        <a href="{% url 'admin_post_job' %}" class="btn btn-primary">➕ Post New Job</a>
+        <span class="admin-badge">{{ jobs|length }} records</span>
+      </div>
+    </div>
+
+    <div class="admin-filters">
+      <form method="get" class="filter-form">
+        <input type="text" name="q" value="{{ q }}" placeholder="Search title or company…" class="filter-input">
+        <select name="status" class="filter-select">
+          <option value="">All Statuses</option>
+          {% for val, label in STATUS_CHOICES %}
+          <option value="{{ val }}" {% if status == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        <a href="{% url 'admin_jobs' %}" class="btn btn-outline btn-sm">Reset</a>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Job Title</th><th>Company</th><th>Type</th><th>Applications</th><th>Status</th><th>Posted</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for job in jobs %}
+            <tr>
+              <td>
+                <div class="fw-600">{{ job.title }}</div>
+                <div class="text-sm text-muted">{{ job.location }}</div>
+              </td>
+              <td class="fw-500">{{ job.company.company_name }}</td>
+              <td><span class="tag">{{ job.get_job_type_display }}</span></td>
+              <td class="text-center fw-600">{{ job.applications.count }}</td>
+              <td><span class="status-badge status-{{ job.status }}">{{ job.get_status_display }}</span></td>
+              <td class="text-sm text-muted">{{ job.created_at|date:"M d, Y" }}</td>
+<td>
+                <div class="action-btns">
+                  <a href="{% url 'job_detail' job.pk %}" class="btn btn-xs btn-outline" target="_blank">View</a>
+                  <a href="{% url 'admin_edit_job' job.pk %}" class="btn btn-xs btn-outline">Edit</a>
+                  <form method="post" action="{% url 'admin_toggle_job' job.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-xs {% if job.status == 'active' %}btn-warning{% else %}btn-success{% endif %}">
+                      {% if job.status == 'active' %}Close{% else %}Activate{% endif %}
+                    </button>
+                  </form>
+                  <form method="post" action="{% url 'admin_delete_job' job.pk %}" style="display:inline;" onsubmit="return confirm('Delete this job?')">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center text-muted py-4">No jobs found.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

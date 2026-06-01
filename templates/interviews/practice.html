@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Practice — Interview IQ{% endblock %}
+{% block content %}
+<div class="page-container" style="max-width:760px;">
+  <a href="{% url 'question_bank' %}" class="btn btn-outline-dark btn-sm mb-2">← Back to Questions</a>
+
+  <div class="card mb-2">
+    <div class="card-header">
+      <div style="display:flex;gap:0.5rem;align-items:center;">
+        <span class="tag tag-accent">{{ question.get_category_display }}</span>
+        <span class="tag">{{ question.get_difficulty_display }}</span>
+        {% if question.role_tag %}<span class="tag">{{ question.role_tag }}</span>{% endif %}
+      </div>
+    </div>
+    <div class="card-body">
+      <h2 style="font-size:1.2rem;margin-bottom:1.5rem;line-height:1.5;">{{ question.question }}</h2>
+
+      {% if not session %}
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Your Answer</label>
+          <textarea name="user_answer" class="form-control" rows="7" data-maxlength="3000" placeholder="Type your answer here. Be specific, use examples where possible, and structure your response clearly..."></textarea>
+        </div>
+        <div style="display:flex;gap:1rem;">
+          <button type="submit" class="btn btn-primary btn-lg">Submit Answer</button>
+          <a href="{% url 'question_bank' %}" class="btn btn-outline-dark">Skip</a>
+        </div>
+      </form>
+      {% else %}
+      <div style="text-align:center;margin-bottom:2rem;">
+        <div class="score-ring {% if session.score >= 70 %}score-high{% elif session.score >= 40 %}score-med{% else %}score-low{% endif %}">
+          <span class="animated-score" data-score="{{ session.score }}">0%</span>
+        </div>
+        <h3 style="margin-bottom:0.25rem;">Your Score</h3>
+        <p class="text-muted text-sm">{{ session.feedback }}</p>
+      </div>
+
+      <div style="margin-bottom:1.5rem;">
+        <h3 style="font-size:1rem;margin-bottom:0.5rem;">Your Answer:</h3>
+        <div style="background:var(--paper);border-radius:var(--radius-sm);padding:1rem;font-size:0.9rem;color:var(--slate);white-space:pre-wrap;">{{ session.user_answer }}</div>
+      </div>
+
+      <div style="margin-bottom:1.5rem;">
+        <h3 style="font-size:1rem;margin-bottom:0.5rem;">Sample Answer:</h3>
+        <div style="background:var(--success-dim);border-left:4px solid var(--success);border-radius:var(--radius-sm);padding:1rem;font-size:0.9rem;color:var(--slate);white-space:pre-wrap;">{{ question.sample_answer }}</div>
+      </div>
+
+      {% if question.tips %}
+      <div style="background:var(--gold-dim);border-radius:var(--radius-sm);padding:1rem;font-size:0.88rem;color:var(--slate);margin-bottom:1.5rem;">
+        <strong>💡 Tips:</strong> {{ question.tips }}
+      </div>
+      {% endif %}
+
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+        <a href="{% url 'question_bank' %}" class="btn btn-primary">Practice Another</a>
+        <a href="{% url 'practice_history' %}" class="btn btn-outline-dark">View History</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

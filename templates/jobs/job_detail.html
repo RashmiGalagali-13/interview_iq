@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}{{ job.title }} — Interview IQ{% endblock %}
+{% block content %}
+<div class="page-container" style="max-width:900px;">
+  <a href="{% url 'job_list' %}" class="btn btn-outline-dark btn-sm mb-2">← Back to Jobs</a>
+  <div class="grid-2" style="align-items:start;">
+    <div>
+      <div class="card mb-2">
+        <div class="card-body">
+          <div style="font-size:0.85rem;color:var(--muted);font-weight:600;margin-bottom:0.25rem;">{{ job.company.company_name }}</div>
+          <h1 style="font-size:1.6rem;margin-bottom:1rem;">{{ job.title }}</h1>
+          <div class="job-meta mb-2">
+            <span class="tag">📍 {{ job.location }}</span>
+            <span class="tag tag-accent">{{ job.get_job_type_display }}</span>
+            <span class="tag">{{ job.get_experience_level_display }}</span>
+            {% if job.salary_min %}<span class="tag tag-gold">💰 ${{ job.salary_min|floatformat:0 }}–${{ job.salary_max|floatformat:0 }}</span>{% endif %}
+            {% if job.deadline %}<span class="tag">📅 Deadline: {{ job.deadline|date:"M d, Y" }}</span>{% endif %}
+          </div>
+          {% if user.is_authenticated and user.is_jobseeker %}
+          <div style="background:var(--paper);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+              <span style="font-size:0.85rem;font-weight:600;">Your Match Score</span>
+              {% if match_score >= 70 %}<span class="match-badge match-high">⚡ {{ match_score }}%</span>
+              {% elif match_score >= 40 %}<span class="match-badge match-med">{{ match_score }}%</span>
+              {% else %}<span class="match-badge match-low">{{ match_score }}%</span>{% endif %}
+            </div>
+            <div class="progress-wrap"><div class="progress-fill {% if match_score >= 70 %}high{% elif match_score >= 40 %}med{% endif %}" style="width:{{ match_score }}%;"></div></div>
+          </div>
+          {% endif %}
+          <h3 style="margin-bottom:0.5rem;font-size:1rem;">Job Description</h3>
+          <p style="color:var(--slate);font-size:0.92rem;line-height:1.7;white-space:pre-line;">{{ job.description }}</p>
+          <h3 style="margin:1rem 0 0.5rem;font-size:1rem;">Requirements</h3>
+          <p style="color:var(--slate);font-size:0.92rem;line-height:1.7;white-space:pre-line;">{{ job.requirements }}</p>
+          <h3 style="margin:1rem 0 0.5rem;font-size:1rem;">Skills Required</h3>
+          <div class="skills-preview">
+            {% for skill in job.get_skills_list %}<span class="skill-pill">{{ skill }}</span>{% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card mb-2">
+        <div class="card-body" style="text-align:center;">
+          {% if user.is_authenticated and user.is_jobseeker %}
+            {% if already_applied %}
+            <div style="background:var(--success-dim);color:var(--success);padding:1rem;border-radius:var(--radius-sm);font-weight:600;margin-bottom:1rem;">✅ Already Applied</div>
+            <a href="{% url 'my_applications' %}" class="btn btn-outline-dark btn-full">View My Applications</a>
+            {% else %}
+            <a href="{% url 'apply_job' job.pk %}" class="btn btn-primary btn-full btn-lg mb-1">Apply Now →</a>
+            {% endif %}
+            <a href="{% url 'save_job' job.pk %}" class="btn btn-outline-dark btn-full mt-1">{% if is_saved %}🔖 Saved{% else %}🔖 Save Job{% endif %}</a>
+          {% elif not user.is_authenticated %}
+          <p class="text-muted text-sm mb-2">Login to apply for this position</p>
+          <a href="{% url 'login' %}" class="btn btn-primary btn-full">Login to Apply</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h3 style="font-size:1rem;margin-bottom:1rem;">About {{ job.company.company_name }}</h3>
+          <p class="text-sm text-muted">{{ job.company.description|default:"No description available."|truncatewords:50 }}</p>
+          <div style="margin-top:1rem;">
+            <div class="text-sm" style="margin-bottom:0.4rem;">🏭 {{ job.company.industry }}</div>
+            {% if job.company.location %}<div class="text-sm" style="margin-bottom:0.4rem;">📍 {{ job.company.location }}</div>{% endif %}
+            {% if job.company.website %}<div class="text-sm"><a href="{{ job.company.website }}" target="_blank" style="color:var(--accent);">🌐 Company Website</a></div>{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,132 @@
+[
+  {
+    "model": "interviews.interviewquestion",
+    "pk": 1,
+    "fields": {
+      "category": "behavioral",
+      "difficulty": "medium",
+      "role_tag": "General",
+      "question": "Tell me about yourself and your professional background.",
+      "sample_answer": "I am a results-driven professional with X years of experience in [field]. I have worked on [key projects], where I developed skills in [relevant skills]. My greatest strength is [strength], and I am particularly passionate about [area]. I am now looking to bring my expertise to a role where I can [goal].",
+      "tips": "Keep it under 2 minutes. Focus on professional journey, not personal life. End with why you are interested in this role.",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "interviews.interviewquestion",
+    "pk": 2,
+    "fields": {
+      "category": "behavioral",
+      "difficulty": "medium",
+      "role_tag": "General",
+      "question": "Describe a time when you faced a significant challenge at work and how you overcame it.",
+      "sample_answer": "Using the STAR method: Situation - I was leading a project that was falling behind schedule. Task - I needed to deliver on time without compromising quality. Action - I reorganized the team, implemented daily standups, identified bottlenecks, and worked extra hours on critical path items. Result - We delivered the project 2 days before the deadline, and the client was very satisfied.",
+      "tips": "Always use the STAR method (Situation, Task, Action, Result). Be specific and quantify results where possible.",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "interviews.interviewquestion",
+    "pk": 3,
+    "fields": {
+      "category": "behavioral",
+      "difficulty": "easy",
+      "role_tag": "General",
+      "question": "What are your greatest strengths and weaknesses?",
+      "sample_answer": "My greatest strength is my analytical thinking \u2014 I excel at breaking down complex problems into manageable parts. For example, in my last role, this helped me reduce processing time by 30%. As for weakness, I used to struggle with delegating tasks because I wanted everything done perfectly. I have been actively working on this by trusting my team more and focusing on outcomes rather than processes.",
+      "tips": "Be honest about weaknesses but always show what you are doing to improve. Avoid cliches like 'I work too hard'.",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "interviews.interviewquestion",
+    "pk": 4,
+    "fields": {
+      "category": "technical",
+      "difficulty": "medium",
+      "role_tag": "Software Engineer",
+      "question": "Explain the difference between SQL and NoSQL databases. When would you use each?",
+      "sample_answer": "SQL databases are relational, use structured schemas, and are best for complex queries and transactions (e.g., banking, e-commerce). NoSQL databases are non-relational, schema-flexible, and designed for scalability and unstructured data. I would choose SQL for data integrity and complex relationships, and NoSQL for high-volume, real-time applications like social media feeds or IoT data streams.",
+      "tips": "Give concrete examples of when you have used each. Mention specific databases like MySQL, PostgreSQL, MongoDB, Redis.",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "interviews.interviewquestion",
+    "pk": 5,
+    "fields": {
+      "category": "technical",
+      "difficulty": "hard",
+      "role_tag": "Software Engineer",
+      "question": "How would you design a URL shortening service like bit.ly?",
+      "sample_answer": "I would design it with: 1) API Layer handling POST/GET requests, 2) A hash function (MD5/Base62) to generate short codes from long URLs, 3) A database storing mappings (Redis for caching, SQL for persistence), 4) Load balancer for traffic distribution, 5) Analytics service for click tracking. Key considerations: collision handling, custom aliases, expiration, rate limiting, and 301 vs 302 redirects.",
+      "tips": "Structure your answer: clarify requirements, estimate scale, then design components. Mention trade-offs.",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "interviews.interviewquestion",
+    "pk": 6,
+    "fields": {
+      "category": "hr",
+      "difficulty": "easy",
+      "role_tag": "General",
+      "question": "Why do you want to work for our company?",
+      "sample_answer": "I am particularly drawn to your company because of your reputation for innovation and your commitment to [specific value]. I have followed your work on [recent project/product] and I believe my skills in [relevant skill] align perfectly with your needs. Additionally, your culture of [specific culture aspect] resonates deeply with my values. I am excited about the opportunity to contribute to your mission of [company mission].",
+      "tips": "Research the company thoroughly before the interview. Mention specific products, values, or recent news. Show genuine enthusiasm.",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "interviews.interviewquestion",
+    "pk": 7,
+    "fields": {
+      "category": "situational",
+      "difficulty": "medium",
+      "role_tag": "General",
+      "question": "How would you handle a disagreement with your manager about a project approach?",
+      "sample_answer": "First, I would make sure I fully understand their perspective by asking clarifying questions. Then I would present my concerns professionally, backed by data and reasoning. If we still disagree, I would suggest a small test or pilot to evaluate both approaches objectively. Ultimately, if the manager still wants to proceed their way after hearing my concerns, I would respect the decision and give it my full support.",
+      "tips": "Show you can be assertive but respectful. Emphasize data-driven decision making. Never suggest you would just give up or go around the manager.",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "interviews.interviewquestion",
+    "pk": 8,
+    "fields": {
+      "category": "leadership",
+      "difficulty": "hard",
+      "role_tag": "Manager",
+      "question": "Describe your leadership style and how you motivate your team.",
+      "sample_answer": "I practice servant leadership \u2014 my primary role is to remove obstacles for my team and help them grow. I motivate by setting clear goals, giving autonomy on how to achieve them, and recognizing both effort and results. I hold regular 1-on-1s to understand individual motivations and career goals. In my last role, this approach led to zero attrition over 18 months and a 25% increase in team productivity.",
+      "tips": "Be authentic about your style. Give specific examples. Show you understand that different people need different types of motivation.",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "interviews.interviewquestion",
+    "pk": 9,
+    "fields": {
+      "category": "behavioral",
+      "difficulty": "medium",
+      "role_tag": "General",
+      "question": "Tell me about a time you had to learn something quickly under pressure.",
+      "sample_answer": "When our lead developer left mid-project, I had to learn React in two weeks to keep us on schedule. I broke the learning into daily goals, used official documentation and online courses, and built small practice apps each evening. I also found a mentor online who could answer specific questions. We delivered the project on time, and React became one of my strongest skills.",
+      "tips": "Show your learning strategy, resourcefulness, and the outcome. Employers want to see you can adapt quickly.",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "interviews.interviewquestion",
+    "pk": 10,
+    "fields": {
+      "category": "technical",
+      "difficulty": "easy",
+      "role_tag": "Software Engineer",
+      "question": "What is the difference between GET and POST HTTP methods?",
+      "sample_answer": "GET is used to retrieve data from a server. It passes parameters in the URL, is idempotent (multiple calls produce same result), can be cached, and has URL length limits. POST is used to send data to the server to create or update resources. Data is sent in the request body, is not cached by default, has no size limits, and is more secure for sensitive data since parameters are not visible in the URL.",
+      "tips": "Mention idempotency, caching, and security aspects. You can also mention other methods like PUT, PATCH, DELETE for bonus points.",
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  }
+]

@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile — Interview IQ{% endblock %}
+{% load static %}
+{% block content %}
+<div class="page-container" style="max-width: 900px;">
+  <!-- Profile Hero -->
+  <div class="profile-hero mb-3" style="background: linear-gradient(135deg, var(--accent), var(--accent-light)); color: white; padding: 2rem; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-lg);">
+    <div class="avatar-circle mb-2 mx-auto" style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border: 3px solid white; font-size: 1.8rem;">
+      {{ form.full_name.value|default:request.user.username|slice:":1"|upper }}
+    </div>
+    <h2 style="margin: 0 0 0.5rem 0; font-size: 1.5rem;">{{ form.full_name.value|default:'Update your profile' }}</h2>
+    <p style="opacity: 0.9;">Complete your profile to unlock better job recommendations</p>
+    <!-- Progress Bar -->
+    <div class="progress-wrap mt-3" style="background: rgba(255,255,255,0.2);">
+      <div class="progress-fill" id="profile-progress" style="width: 0%; background: white;"></div>
+    </div>
+    <small id="progress-text" style="opacity: 0.8;">0% complete</small>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" id="edit-profile-form">
+    {% csrf_token %}
+    
+    <!-- Section 1: Personal Information -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3 style="margin: 0; font-size: 1.1rem;">👤 Personal Information</h3>
+      </div>
+      <div class="card-body">
+        <div class="grid-2 gap-2">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            {{ form.full_name }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            {{ form.phone }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location</label>
+          {{ form.location }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bio <small class="text-muted">(Tell employers about yourself)</small></label>
+          {{ form.bio }}
+          <small id="bio-count" class="text-muted">0/500</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Professional Background -->
+    {% if profile_type == 'seeker' %}
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3 style="margin: 0; font-size: 1.1rem;">💼 Professional Background</h3>
+      </div>
+      <div class="card-body">
+        <div class="grid-2 gap-2">
+          <div class="form-group">
+            <label class="form-label">Years of Experience</label>
+            {{ form.experience_years }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Education</label>
+            {{ form.education }}
+          </div>
+        </div>
+        <div class="grid-2 gap-2">
+          <div class="form-group">
+            <label class="form-label">Desired Role</label>
+            {{ form.desired_role }}
+          </div>
+          <div class="form-group">
+            <label class="form-label">Desired Salary</label>
+            {{ form.desired_salary }}
+            <small class="text-muted">Annual, optional</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Section 3: Skills -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3 style="margin: 0; font-size: 1.1rem;">⭐ Skills</h3>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Add your top skills <small>(comma separated, JS preview below)</small></label>
+          {{ form.skills }}
+        </div>
+        <div id="skills-preview" class="d-flex gap-1 flex-wrap mb-2"></div>
+        <small class="text-muted">Max 10 skills. e.g. Python, Django, Leadership</small>
+      </div>
+    </div>
+
+    <!-- Section 4: Resume & Links -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3 style="margin: 0; font-size: 1.1rem;">📎 Resume & Links</h3>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Resume PDF</label>
+          {{ form.resume }}
+          <div id="resume-preview" class="mt-2"></div>
+          {% if form.instance.resume %}
+          <small class="text-muted">Current: <a href="{{ form.instance.resume.url }}" target="_blank">View/Download</a></small>
+          {% endif %}
+        </div>
+        {% if profile_type == 'seeker' %}
+        <div class="form-group">
+          <label class="form-label">LinkedIn Profile</label>
+          {{ form.linkedin }}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex gap-2 justify-between" style="padding-top: 1rem;">
+      <button type="submit" class="btn btn-primary btn-lg" id="save-btn">
+        💾 Save Changes
+      </button>
+      <a href="{% if profile_type == 'company' %}{% url 'company_dashboard' %}{% else %}{% url 'seeker_dashboard' %}{% endif %}" class="btn btn-outline-dark btn-lg">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+// Basic JS hooks - full in main.js
+document.addEventListener('DOMContentLoaded', function() {
+  // Placeholder for now
+  console.log('Edit profile loaded');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}Interview IQ — Smart Job Matching & Interview Practice{% endblock %}
+{% block content %}
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">✦ AI-Powered Career Platform</div>
+    <h1 class="js-typewriter" data-text="Land Your Dream Job">Land Your <span class="accent-text">Dream Job</span><br>Ace Every Interview</h1>
+    <p>Smart job matching, real-time application tracking, and AI-curated interview practice — all in one place.</p>
+    <div class="hero-cta">
+      {% if user.is_authenticated %}
+        {% if user.is_company %}
+          <a href="{% url 'post_job' %}" class="btn btn-primary btn-lg btn-ripple">Post a Job</a>
+          <a href="{% url 'company_dashboard' %}" class="btn btn-outline btn-lg btn-ripple">Dashboard</a>
+        {% elif user.is_admin_user %}
+          <a href="{% url 'admin_dashboard' %}" class="btn btn-primary btn-lg btn-ripple">Admin Panel</a>
+          <a href="{% url 'admin_jobs' %}" class="btn btn-outline btn-lg btn-ripple">Manage Jobs</a>
+        {% else %}
+          <a href="{% url 'job_list' %}" class="btn btn-primary btn-lg btn-ripple">Browse Jobs</a>
+          <a href="{% url 'question_bank' %}" class="btn btn-outline btn-lg btn-ripple">Practice Interviews</a>
+        {% endif %}
+      {% else %}
+        <a href="{% url 'register_seeker' %}" class="btn btn-primary btn-lg btn-ripple">Register</a>
+        <a href="{% url 'register_admin' %}" class="btn btn-outline btn-lg btn-ripple">Admin</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section id="demo" class="demo-section js-card-anim">
+  <div style="max-width:800px; margin:0 auto;">
+    <h2 style="font-size:2.2rem; margin-bottom:1rem;">See Interview IQ in Action</h2>
+    <p class="text-muted mb-3">Real users landing dream jobs with smart matching and prep.</p>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="inner">
+    <div class="stat-item"><div class="number">10K+</div><div class="label">Active Jobs</div></div>
+    <div class="stat-item js-counter" data-target="5000"><div class="number js-count">50k</div><div class="label">Companies</div></div>
+    <div class="stat-item js-counter" data-target="50000"><div class="number js-count">20K+</div><div class="label">Job Seekers</div></div>
+    <div class="stat-item js-counter" data-target="500"><div class="number js-count">20</div><div class="label">Interview Questions</div></div>
+  </div>
+</div>
+
+<div class="page-container">
+  <div style="text-align:center; margin-bottom:3rem;">
+    <h2 style="font-size:2rem; margin-bottom:0.5rem;">Everything You Need to <span class="text-accent">Succeed</span></h2>
+    <p class="text-muted">From discovery to offer — Interview IQ has you covered.</p>
+  </div>
+  <div class="grid-3 mb-3">
+    <div class="card js-card-anim" style="text-align:center; padding:2rem;">
+      <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Smart Job Matching" class="card-icon" loading="lazy">
+      <h3 style="margin-bottom:0.5rem;">Smart Job Matching</h3>
+      <p class="text-muted text-sm">Our skill-based algorithm ranks jobs by how well they match your profile — no more endless scrolling.</p>
+      <a href="{% url 'job_list' %}" class="btn btn-outline btn-sm mt-2 btn-ripple">Explore</a>
+    </div>
+    <div class="card js-card-anim" style="text-align:center; padding:2rem;">
+      <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Application Tracking" class="card-icon" loading="lazy">
+      <h3 style="margin-bottom:0.5rem;">Application Tracking</h3>
+      <p class="text-muted text-sm">Track every application in real-time. Know exactly where you stand — pending, shortlisted, or accepted.</p>
+      <a href="{% url 'my_applications' %}" class="btn btn-outline btn-sm mt-2 btn-ripple">Explore</a>
+    </div>
+    <div class="card js-card-anim" style="text-align:center; padding:2rem;">
+      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Interview Prep" class="card-icon" loading="lazy">
+      <h3 style="margin-bottom:0.5rem;">Interview Preparation</h3>
+      <p class="text-muted text-sm">Practice aptitude, coding, and company-specific interview questions to improve your chances.</p>
+      <a href="{% url 'question_bank' %}" class="btn btn-outline btn-sm mt-2 btn-ripple">Explore</a>
+    </div>
+  </div>
+
+  <div style="background:var(--ink); color:white; border-radius:var(--radius-lg); padding:3rem; text-align:center; position:relative; overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(232,76,27,0.3) 0%,transparent 60%);pointer-events:none;"></div>
+    <div style="position:relative;">
+      <h2 style="font-size:1.8rem; margin-bottom:0.5rem;">Ready to get started?</h2>
+      <p style="color:rgba(255,255,255,0.65); margin-bottom:2rem;">Join thousands of professionals who found their dream role through Interview IQ.</p>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="{% url 'register_seeker' %}" class="btn btn-primary btn-lg">I'm Job Seeking</a>
+        <a href="{% url 'register_company' %}" class="btn btn-outline btn-lg">I'm Hiring</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
