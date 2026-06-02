@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 admin_name:admin@13
+=======
+admin_name:admin@13
+>>>>>>> 4701e6cb1b9b8dfaf806b74edf0b2f0c309de57e
 password:admin@123
