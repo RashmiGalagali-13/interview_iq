@@ -2,10 +2,16 @@ from pathlib import Path
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Security
 SECRET_KEY = 'django-insecure-interview-iq-secret-key-change-in-production'
-DEBUG = True
+
+DEBUG = False
+
 ALLOWED_HOSTS = ['*']
 
+
+# Applications
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -13,12 +19,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'accounts',
     'jobs',
     'interviews',
     'admin_panel',
 ]
 
+
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -29,8 +38,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+# URLs
 ROOT_URLCONF = 'interview_iq.urls'
 
+
+# Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -47,8 +60,13 @@ TEMPLATES = [
     },
 ]
 
+
+# WSGI
 WSGI_APPLICATION = 'interview_iq.wsgi.application'
 
+
+# Database
+# Keeping SQLite for the first deployment.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -56,37 +74,55 @@ DATABASES = {
     }
 }
 
-# MySQL (uncomment for production):
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'interview_iq_db',
-#         'USER': 'your_user',
-#         'PASSWORD': 'your_password',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
 
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
 ]
 
+
+# Internationalization
 LANGUAGE_CODE = 'en-us'
+
 TIME_ZONE = 'UTC'
+
 USE_I18N = True
+
 USE_TZ = True
 
+
+# Static files
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
+
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+
+# Media files
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT = BASE_DIR / 'media'
 
+
+# Default primary key
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Custom user model
 AUTH_USER_MODEL = 'accounts.User'
+
+
+# Login / Logout
 LOGIN_URL = '/accounts/login/'
+
 LOGIN_REDIRECT_URL = '/'
+
 LOGOUT_REDIRECT_URL = '/'
